@@ -1,16 +1,4 @@
 
-
-
-// void signOut(context) {
-//   CacheHelper.removeData(key: 'token').then((value) {
-//     if (value) {
-//       showToast(
-//           message: 'Sign out Successfully', toastStates: ToastStates.SUCCESS);
-//       navigateAndFinish(context, LoginScreen());
-//     }
-//   });
-// }
-
 void printFullText(String text)
 {
   final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk

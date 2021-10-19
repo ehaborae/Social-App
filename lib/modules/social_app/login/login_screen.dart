@@ -1,6 +1,7 @@
 import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social/modules/social_app/register/register_screen.dart';
 import 'package:social/shared/components/components.dart';
 
 import 'cubit/cubit.dart';
@@ -15,9 +16,13 @@ class SocialLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => SocialLoginCubit(),
-      child: BlocConsumer<SocialLoginCubit, SocialLoginStates>(
-        listener: (context, state) {},
+      create: (BuildContext context) => LoginCubit(),
+      child: BlocConsumer<LoginCubit, LoginStates>(
+        listener: (context, state) {
+          if (state is LoginErrorState) {
+            showToast(message: state.error, toastStates: ToastStates.ERROR);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(),
@@ -38,7 +43,7 @@ class SocialLoginScreen extends StatelessWidget {
                                   ),
                         ),
                         Text(
-                          'Login now to browse our hot offers',
+                          'Login now to communicate with friends',
                           style:
                               Theme.of(context).textTheme.headline6!.copyWith(
                                     color: Colors.grey,
@@ -50,7 +55,7 @@ class SocialLoginScreen extends StatelessWidget {
                         defaultFormField(
                             controller: emailController,
                             label: 'Email Address',
-                            prefix: Icons.email_outlined,
+                            prefix: Icons.email,
                             type: TextInputType.emailAddress,
                             validate: (String? value) {
                               if (value!.isEmpty) {
@@ -61,16 +66,15 @@ class SocialLoginScreen extends StatelessWidget {
                           height: 15.0,
                         ),
                         defaultFormField(
-                            isPassword:
-                                SocialLoginCubit.get(context).isPassword,
+                            isPassword: LoginCubit.get(context).isPassword,
                             suffixPressed: () {
-                              SocialLoginCubit.get(context)
+                              LoginCubit.get(context)
                                   .changePasswordVisibility();
                             },
-                            suffix: SocialLoginCubit.get(context).suffix,
+                            suffix: LoginCubit.get(context).suffix,
                             controller: passwordController,
                             label: 'Password',
-                            prefix: Icons.lock_outline,
+                            prefix: Icons.lock,
                             type: TextInputType.visiblePassword,
                             validate: (String? value) {
                               if (value!.isEmpty) {
@@ -81,15 +85,15 @@ class SocialLoginScreen extends StatelessWidget {
                           height: 30.0,
                         ),
                         BuildCondition(
-                          condition: state is! SocialLoginLoadingState,
+                          condition: state is! LoginLoadingState,
                           builder: (context) => defaultButton(
                             function: () {
-                              // if (formKey.currentState!.validate()) {
-                              //   SocialLoginCubit.get(context).userLogin(
-                              //     email: emailController.text,
-                              //     password: passwordController.text,
-                              //   );
-                              // }
+                              if (formKey.currentState!.validate()) {
+                                LoginCubit.get(context).userLogin(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                );
+                              }
                             },
                             text: 'login',
                             isUpperCase: true,
@@ -109,7 +113,7 @@ class SocialLoginScreen extends StatelessWidget {
                             defaultTextButton(
                               text: 'register now',
                               onPressed: () {
-                                // navigateTo(context, RegisterScreen());
+                                navigateTo(context, RegisterScreen());
                               },
                             ),
                           ],
