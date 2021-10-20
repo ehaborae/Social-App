@@ -1,14 +1,17 @@
 import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social/layouts/home/home_screen.dart';
 import 'package:social/modules/social_app/register/register_screen.dart';
 import 'package:social/shared/components/components.dart';
+import 'package:social/shared/components/constants.dart';
+import 'package:social/shared/network/local/cache_helper.dart';
 
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
 
 // ignore: must_be_immutable
-class SocialLoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -21,6 +24,13 @@ class SocialLoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginErrorState) {
             showToast(message: state.error, toastStates: ToastStates.ERROR);
+          } else if (state is LoginSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: uId).then((value) {
+              print('done --- $uId');
+              navigateAndFinish(context, HomeScreen());
+            }).catchError((error) {
+              print(error.toString());
+            });
           }
         },
         builder: (context, state) {

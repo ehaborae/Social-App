@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/home_screen.dart';
 import 'package:social/shared/components/components.dart';
+import 'package:social/shared/components/constants.dart';
+import 'package:social/shared/network/local/cache_helper.dart';
 
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
@@ -21,8 +23,15 @@ class RegisterScreen extends StatelessWidget {
       create: (BuildContext context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         listener: (context, state) {
-          if(state is CreateUserSuccessState){
-            navigateAndFinish(context, HomeScreen());
+          if (state is RegisterErrorState) {
+            showToast(message: state.error, toastStates: ToastStates.ERROR);
+          } else if (state is RegisterSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: uId).then((value) {
+              print('done --- $uId');
+              navigateAndFinish(context, HomeScreen());
+            }).catchError((error) {
+              print(error.toString());
+            });
           }
         },
         builder: (context, state) {
