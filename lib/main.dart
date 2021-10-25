@@ -47,12 +47,28 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => HomeCubit()..getUserDate(),
       child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state){},
-        builder: (context, state){
-          return  MaterialApp(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Social',
             theme: ThemeData(
+              bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                type: BottomNavigationBarType.shifting,
+                elevation: 10,
+                backgroundColor: Colors.white,
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.grey,
+              ),
+              appBarTheme: AppBarTheme(
+                titleTextStyle: TextStyle(color: Colors.black),
+                iconTheme: IconThemeData(
+                  color: Colors.blue,
+                ),
+                backgroundColor: Colors.white,
+                elevation: 0,
+              ),
+              scaffoldBackgroundColor: Colors.white,
               fontFamily: 'Jannah',
               primarySwatch: Colors.blue,
             ),

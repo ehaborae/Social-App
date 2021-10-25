@@ -1,10 +1,7 @@
-import 'package:buildcondition/buildcondition.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
 import 'package:social/layouts/home/cubit/states.dart';
-import 'package:social/shared/components/components.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -15,44 +12,55 @@ class HomeScreen extends StatelessWidget {
         var cubit = HomeCubit.get(context);
         return Scaffold(
           appBar: AppBar(
-            title: Text('Home'),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.notifications_none,
+                ),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                ),
+                onPressed: () {},
+              ),
+            ],
+            title: Text(
+              cubit.titles[cubit.currentIndex],
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
           ),
-          body: BuildCondition(
-            condition: cubit.userModel != null,
-            builder: (context) {
-              var userModel = cubit.userModel;
-
-              return Column(
-                children: [
-                  if (!FirebaseAuth.instance.currentUser!.emailVerified)
-                    Container(
-                      color: Colors.amberAccent,
-                      padding: EdgeInsetsDirectional.only(
-                        start: 15.0,
-                        end: 15.0,
-                      ),
-                      height: 50.0,
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline),
-                          SizedBox(
-                            width: 15.0,
-                          ),
-                          Text('Send Email Verification'),
-                          Spacer(),
-                          defaultTextButton(
-                            onPressed: () {
-                              cubit.sendVerification();
-                            },
-                            text: 'send',
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              );
+          body: cubit.screens[cubit.currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: cubit.currentIndex,
+            onTap: (index) {
+              cubit.changeBottomNaveBare(index);
             },
-            fallback: (context) => Center(child: CircularProgressIndicator()),
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  label: 'Home'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.chat,
+                  ),
+                  label: 'Chats'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.location_on,
+                  ),
+                  label: 'Users'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.settings,
+                  ),
+                  label: 'Settings'),
+            ],
           ),
         );
       },

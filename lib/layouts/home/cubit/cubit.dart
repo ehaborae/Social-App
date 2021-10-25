@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/states.dart';
 import 'package:social/models/social/user_model.dart';
+import 'package:social/modules/social_app/chats/chats.dart';
+import 'package:social/modules/social_app/feeds/feeds.dart';
+import 'package:social/modules/social_app/settings/settings.dart';
+import 'package:social/modules/social_app/users/users.dart';
 import 'package:social/shared/components/constants.dart';
 
 class HomeCubit extends Cubit<HomeStates> {
@@ -35,5 +40,28 @@ class HomeCubit extends Cubit<HomeStates> {
     }).catchError((error) {
       emit(HomeEmailVerificationErrorInitialState(error.toString()));
     });
+  }
+
+//  ---------------- Send Email Verification
+
+  int currentIndex = 0;
+
+  List<Widget> screens = [
+    Feeds(),
+    Chats(),
+    Users(),
+    SettingsScreen(),
+  ];
+
+  List<String> titles = [
+    'Home',
+    'Chats',
+    'Users',
+    'Settings',
+  ];
+
+  void changeBottomNaveBare(int index) {
+    currentIndex = index;
+    emit(ChangeBottomNaveBarState());
   }
 }

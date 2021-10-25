@@ -27,3 +27,7 @@ class HomeEmailVerificationErrorInitialState extends HomeStates {
 
   HomeEmailVerificationErrorInitialState(this.error);
 }
+
+//  ---------------- Change Bottom Nave Bar
+
+class ChangeBottomNaveBarState extends HomeStates{}
