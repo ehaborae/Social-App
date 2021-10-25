@@ -31,3 +31,7 @@ class HomeEmailVerificationErrorInitialState extends HomeStates {
 //  ---------------- Change Bottom Nave Bar
 
 class ChangeBottomNaveBarState extends HomeStates{}
+
+//  ---------------- Open New Post Screen
+
+class OpenNewPostScreenState extends HomeStates{}

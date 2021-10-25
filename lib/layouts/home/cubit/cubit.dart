@@ -6,6 +6,7 @@ import 'package:social/layouts/home/cubit/states.dart';
 import 'package:social/models/social/user_model.dart';
 import 'package:social/modules/social_app/chats/chats.dart';
 import 'package:social/modules/social_app/feeds/feeds.dart';
+import 'package:social/modules/social_app/new_post/new_post_screen.dart';
 import 'package:social/modules/social_app/settings/settings.dart';
 import 'package:social/modules/social_app/users/users.dart';
 import 'package:social/shared/components/constants.dart';
@@ -49,6 +50,7 @@ class HomeCubit extends Cubit<HomeStates> {
   List<Widget> screens = [
     Feeds(),
     Chats(),
+    NewPost(),
     Users(),
     SettingsScreen(),
   ];
@@ -56,12 +58,17 @@ class HomeCubit extends Cubit<HomeStates> {
   List<String> titles = [
     'Home',
     'Chats',
+    '',
     'Users',
     'Settings',
   ];
 
   void changeBottomNaveBare(int index) {
-    currentIndex = index;
-    emit(ChangeBottomNaveBarState());
+    if (currentIndex == 2)
+      emit(OpenNewPostScreenState());
+    else {
+      currentIndex = index;
+      emit(ChangeBottomNaveBarState());
+    }
   }
 }

@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
             title: 'Social',
             theme: ThemeData(
               bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                type: BottomNavigationBarType.shifting,
+                type: BottomNavigationBarType.fixed,
                 elevation: 10,
                 backgroundColor: Colors.white,
                 selectedItemColor: Colors.blue,
