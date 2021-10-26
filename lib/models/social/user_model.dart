@@ -2,12 +2,18 @@ class UserModel {
   String? name;
   String? email;
   String? phone;
+  String? image;
+  String? cover;
+  String? bio;
   String? uId;
 
   UserModel({
     this.name,
     this.email,
     this.phone,
+    this.image,
+    this.cover,
+    this.bio,
     this.uId,
   });
 
@@ -15,6 +21,9 @@ class UserModel {
     name = json['name'];
     email = json['email'];
     phone = json['phone'];
+    image = json['image'];
+    cover = json['cover'];
+    bio = json['bio'];
     uId = json['uId'];
   }
 
@@ -23,5 +32,8 @@ class UserModel {
         'email': email,
         'phone': phone,
         'uId': uId,
+        'bio': bio,
+        'image': image,
+        'cover': cover,
       };
 }

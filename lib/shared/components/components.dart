@@ -69,7 +69,7 @@ Widget defaultButton({
 }) =>
     Container(
       width: width,
-      height: 55.0,
+      height: 45.0,
       child: MaterialButton(
         onPressed: function,
         child: Text(
