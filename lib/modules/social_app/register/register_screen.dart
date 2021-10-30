@@ -25,7 +25,7 @@ class RegisterScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is RegisterErrorState) {
             showToast(message: state.error, toastStates: ToastStates.ERROR);
-          } else if (state is RegisterSuccessState) {
+          } else if (state is CreateUserSuccessState) {
             CacheHelper.saveData(key: 'uId', value: uId).then((value) {
               print('done --- $uId');
               navigateAndFinish(context, HomeScreen());

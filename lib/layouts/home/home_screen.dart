@@ -1,3 +1,4 @@
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
@@ -10,71 +11,79 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
-        if(HomeCubit.get(context).currentIndex == 2){
-          HomeCubit.get(context).currentIndex = 0;
+        // if(HomeCubit.get(context).currentIndex == 2){
+        //   HomeCubit.get(context).currentIndex = 0;
+        //   navigateTo(context, NewPost());
+        // }
+        if(state is OpenNewPostScreenState){
           navigateTo(context, NewPost());
         }
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.notifications_none,
+        var userModel = cubit.userModel;
+        return BuildCondition(
+          condition: userModel != null,
+          builder: (context) => Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.notifications_none,
+                  ),
+                  onPressed: () {},
                 ),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.search,
+                IconButton(
+                  icon: Icon(
+                    Icons.search,
+                  ),
+                  onPressed: () {},
                 ),
-                onPressed: () {},
-              ),
-            ],
-            title: Text(
-              cubit.titles[cubit.currentIndex],
-              style: TextStyle(
-                color: Colors.black,
+              ],
+              title: Text(
+                cubit.titles[cubit.currentIndex],
+                style: TextStyle(
+                  color: Colors.black,
+                ),
               ),
             ),
+            body: cubit.screens[cubit.currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: cubit.currentIndex,
+              onTap: (index) {
+                cubit.changeBottomNaveBare(index);
+              },
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home_outlined,
+                    ),
+                    label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.chat_outlined,
+                    ),
+                    label: 'Chats'),
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.post_add_outlined,
+                    ),
+                    label: 'Post'),
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.location_on_outlined,
+                    ),
+                    label: 'Users'),
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.settings_outlined,
+                    ),
+                    label: 'Settings'),
+              ],
+            ),
           ),
-          body: cubit.screens[cubit.currentIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: cubit.currentIndex,
-            onTap: (index) {
-              cubit.changeBottomNaveBare(index);
-            },
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.home_outlined,
-                  ),
-                  label: 'Home'),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.chat_outlined,
-                  ),
-                  label: 'Chats'),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.post_add_outlined,
-                  ),
-                  label: 'Post'),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.location_on_outlined,
-                  ),
-                  label: 'Users'),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.settings_outlined,
-                  ),
-                  label: 'Settings'),
-            ],
-          ),
+          fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
     );

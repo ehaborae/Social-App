@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social/layouts/home/cubit/states.dart';
 import 'package:social/models/social/user_model.dart';
 import 'package:social/modules/social_app/chats/chats.dart';
@@ -58,17 +61,39 @@ class HomeCubit extends Cubit<HomeStates> {
   List<String> titles = [
     'Home',
     'Chats',
-    '',
+    'Post',
     'Users',
     'Settings',
   ];
 
   void changeBottomNaveBare(int index) {
-    if (currentIndex == 2)
+    if (index == 2)
       emit(OpenNewPostScreenState());
     else {
       currentIndex = index;
       emit(ChangeBottomNaveBarState());
     }
+  }
+
+//  ---------------- Pick Profile && Cover Image
+
+  var picker = ImagePicker();
+
+//  ---------------- Pick Profile Image
+  File? profileImage;
+
+  Future<void> pickProfileImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    profileImage = File(pickedFile!.path);
+    emit(PickProfileImageState());
+  }
+
+//  ---------------- Pick Cover Image
+  File? coverImage;
+
+  Future<void> pickCoverImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    coverImage = File(pickedFile!.path);
+    emit(PickCoverImageState());
   }
 }

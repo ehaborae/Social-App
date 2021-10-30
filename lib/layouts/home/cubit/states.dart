@@ -35,3 +35,10 @@ class ChangeBottomNaveBarState extends HomeStates{}
 //  ---------------- Open New Post Screen
 
 class OpenNewPostScreenState extends HomeStates{}
+
+//  ---------------- Pick Profile Image
+
+class PickProfileImageState extends HomeStates{}
+//  ---------------- Pick Cover Image
+
+class PickCoverImageState extends HomeStates{}
