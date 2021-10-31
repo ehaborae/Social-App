@@ -37,10 +37,6 @@ class EditProfile extends StatelessWidget {
             actions: [
               defaultTextButton(
                 onPressed: () {
-                  // if (profileImage != null) cubit.uploadProfileImage();
-                  // if (coverImage != null) cubit.uploadCoverImage();
-                  // if (profileImage != null && coverImage != null)
-                  //   cubit.uploadUserImages();
                   cubit.updateUserDate(
                     name: nameController.text,
                     phone: phoneController.text,

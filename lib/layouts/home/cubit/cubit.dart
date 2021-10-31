@@ -164,7 +164,7 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-//  ---------------- Firebase Storage, Upload User Images
+//  ---------------- Update User
 
   void updateUser({
     required String name,
@@ -194,6 +194,7 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+//  ---------------- Firebase Storage, Update user date
   void updateUserDate({
     required String name,
     required String phone,
@@ -206,27 +207,22 @@ class HomeCubit extends Cubit<HomeStates> {
         phone: phone,
         bio: bio,
       );
-      updateUser(
-        bio: bio,
-        name: name,
-        phone: phone,
-      );
     } else if (coverImage != null) {
       uploadCoverImage(
         name: name,
         phone: phone,
         bio: bio,
       );
-      updateUser(
-        bio: bio,
-        name: name,
-        phone: phone,
-      );
     } else if (profileImage != null && coverImage != null) {
-      updateUser(
-        bio: bio,
+      uploadProfileImage(
         name: name,
         phone: phone,
+        bio: bio,
+      );
+      uploadCoverImage(
+        name: name,
+        phone: phone,
+        bio: bio,
       );
     } else {
       updateUser(
