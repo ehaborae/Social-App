@@ -41,9 +41,9 @@ class PickProfileImageState extends HomeStates {}
 
 class PickCoverImageState extends HomeStates {}
 
-//  ---------------- Upload User Images
+//  ---------------- Upload User Data
 
-class UploadUserImagesLoadingState extends HomeStates {}
+class UploadUserDataLoadingState extends HomeStates {}
 
 //  ---------------- Upload Profile Image
 
@@ -56,3 +56,7 @@ class UploadProfileImageErrorState extends HomeStates {}
 class UploadCoverImageSuccessState extends HomeStates {}
 
 class UploadCoverImageErrorState extends HomeStates {}
+
+//  ---------------- Update User
+
+class UpdateUserErrorState extends HomeStates {}

@@ -102,8 +102,12 @@ class HomeCubit extends Cubit<HomeStates> {
 
   String? uploadedProfileImageUrl;
 
-  void uploadProfileImage() {
-    emit(UploadUserImagesLoadingState());
+  void uploadProfileImage({
+    required String name,
+    required String phone,
+    required String bio,
+  }) {
+    emit(UploadUserDataLoadingState());
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('users/${Uri.file(profileImage!.path).pathSegments.last}')
@@ -111,6 +115,13 @@ class HomeCubit extends Cubit<HomeStates> {
         .then((value) {
       value.ref.getDownloadURL().then((value) {
         print(value);
+        uploadedProfileImageUrl = value;
+        updateUser(
+          bio: bio,
+          name: name,
+          phone: phone,
+          profile: uploadedProfileImageUrl,
+        );
         emit(UploadProfileImageSuccessState());
       }).catchError((error) {
         emit(UploadProfileImageErrorState());
@@ -124,8 +135,12 @@ class HomeCubit extends Cubit<HomeStates> {
 
   String? uploadedCoverImageUrl;
 
-  void uploadCoverImage() {
-    emit(UploadUserImagesLoadingState());
+  void uploadCoverImage({
+    required String name,
+    required String phone,
+    required String bio,
+  }) {
+    emit(UploadUserDataLoadingState());
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('users/${Uri.file(coverImage!.path).pathSegments.last}')
@@ -134,6 +149,12 @@ class HomeCubit extends Cubit<HomeStates> {
       value.ref.getDownloadURL().then((value) {
         print(value);
         uploadedCoverImageUrl = value;
+        updateUser(
+          bio: bio,
+          name: name,
+          phone: phone,
+          cover: uploadedCoverImageUrl,
+        );
         emit(UploadCoverImageSuccessState());
       }).catchError((error) {
         emit(UploadCoverImageErrorState());
@@ -145,9 +166,74 @@ class HomeCubit extends Cubit<HomeStates> {
 
 //  ---------------- Firebase Storage, Upload User Images
 
-  void uploadUserImages() {
-    emit(UploadUserImagesLoadingState());
-    uploadProfileImage();
-    uploadCoverImage();
+  void updateUser({
+    required String name,
+    required String phone,
+    required String bio,
+    String? profile,
+    String? cover,
+  }) {
+    UserModel model = UserModel(
+      email: userModel!.email,
+      name: name,
+      phone: phone,
+      image: profile ?? userModel!.image,
+      cover: cover ?? userModel!.cover,
+      uId: userModel!.uId,
+      bio: bio,
+    );
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel!.uId)
+        .update(model.toMap())
+        .then((value) {
+      getUserDate();
+    }).catchError((error) {
+      emit(UpdateUserErrorState());
+    });
+  }
+
+  void updateUserDate({
+    required String name,
+    required String phone,
+    required String bio,
+  }) {
+    emit(UploadUserDataLoadingState());
+    if (profileImage != null) {
+      uploadProfileImage(
+        name: name,
+        phone: phone,
+        bio: bio,
+      );
+      updateUser(
+        bio: bio,
+        name: name,
+        phone: phone,
+      );
+    } else if (coverImage != null) {
+      uploadCoverImage(
+        name: name,
+        phone: phone,
+        bio: bio,
+      );
+      updateUser(
+        bio: bio,
+        name: name,
+        phone: phone,
+      );
+    } else if (profileImage != null && coverImage != null) {
+      updateUser(
+        bio: bio,
+        name: name,
+        phone: phone,
+      );
+    } else {
+      updateUser(
+        bio: bio,
+        name: name,
+        phone: phone,
+      );
+    }
   }
 }

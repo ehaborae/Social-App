@@ -10,6 +10,7 @@ import 'package:social/shared/components/components.dart';
 class EditProfile extends StatelessWidget {
   var nameController = TextEditingController();
   var bioController = TextEditingController();
+  var phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class EditProfile extends StatelessWidget {
         var userModel = cubit.userModel;
         nameController.text = userModel!.name!;
         bioController.text = userModel.bio!;
+        phoneController.text = userModel.phone!;
 
         return Scaffold(
           appBar: AppBar(
@@ -35,10 +37,15 @@ class EditProfile extends StatelessWidget {
             actions: [
               defaultTextButton(
                 onPressed: () {
-                  if (profileImage != null) cubit.uploadProfileImage();
-                  if (coverImage != null) cubit.uploadCoverImage();
-                  if (profileImage != null && coverImage != null)
-                    cubit.uploadUserImages();
+                  // if (profileImage != null) cubit.uploadProfileImage();
+                  // if (coverImage != null) cubit.uploadCoverImage();
+                  // if (profileImage != null && coverImage != null)
+                  //   cubit.uploadUserImages();
+                  cubit.updateUserDate(
+                    name: nameController.text,
+                    phone: phoneController.text,
+                    bio: bioController.text,
+                  );
                 },
                 text: 'update',
               ),
@@ -51,9 +58,9 @@ class EditProfile extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                if (state is UploadUserImagesLoadingState)
+                if (state is UploadUserDataLoadingState)
                   LinearProgressIndicator(),
-                if (state is UploadUserImagesLoadingState)
+                if (state is UploadUserDataLoadingState)
                   SizedBox(
                     height: 5.0,
                   ),
@@ -173,6 +180,21 @@ class EditProfile extends StatelessWidget {
                   validate: (String? value) {
                     if (value!.isEmpty)
                       return 'Name must not be empty';
+                    else
+                      return null;
+                  },
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                defaultFormField(
+                  controller: phoneController,
+                  label: 'Phone',
+                  prefix: Icons.phone_outlined,
+                  type: TextInputType.phone,
+                  validate: (String? value) {
+                    if (value!.isEmpty)
+                      return 'Phone must not be empty';
                     else
                       return null;
                   },
