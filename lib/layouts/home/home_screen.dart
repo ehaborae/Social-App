@@ -15,75 +15,75 @@ class HomeScreen extends StatelessWidget {
         //   HomeCubit.get(context).currentIndex = 0;
         //   navigateTo(context, NewPost());
         // }
-        if(state is OpenNewPostScreenState){
+        if (state is OpenNewPostScreenState) {
           navigateTo(context, NewPost());
         }
       },
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
         var userModel = cubit.userModel;
-        return BuildCondition(
-          condition: userModel != null,
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: Icon(
-                    Icons.notifications_none,
-                  ),
-                  onPressed: () {},
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.notifications_none,
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.search,
-                  ),
-                  onPressed: () {},
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.search,
                 ),
-              ],
-              title: Text(
-                cubit.titles[cubit.currentIndex],
-                style: TextStyle(
-                  color: Colors.black,
-                ),
+                onPressed: () {},
+              ),
+            ],
+            title: Text(
+              cubit.titles[cubit.currentIndex],
+              style: TextStyle(
+                color: Colors.black,
               ),
             ),
-            body: cubit.screens[cubit.currentIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: cubit.currentIndex,
-              onTap: (index) {
-                cubit.changeBottomNaveBare(index);
-              },
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.home_outlined,
-                    ),
-                    label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.chat_outlined,
-                    ),
-                    label: 'Chats'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.post_add_outlined,
-                    ),
-                    label: 'Post'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.location_on_outlined,
-                    ),
-                    label: 'Users'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.settings_outlined,
-                    ),
-                    label: 'Settings'),
-              ],
-            ),
           ),
-          fallback: (context) => Center(child: CircularProgressIndicator()),
+          body: BuildCondition(
+            condition: userModel != null,
+            builder: (context) => cubit.screens[cubit.currentIndex],
+            fallback: (context) => Center(child: CircularProgressIndicator()),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: cubit.currentIndex,
+            onTap: (index) {
+              cubit.changeBottomNaveBare(index);
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home_outlined,
+                  ),
+                  label: 'Home'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.chat_outlined,
+                  ),
+                  label: 'Chats'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.post_add_outlined,
+                  ),
+                  label: 'Post'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.location_on_outlined,
+                  ),
+                  label: 'Users'),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.settings_outlined,
+                  ),
+                  label: 'Settings'),
+            ],
+          ),
         );
       },
     );

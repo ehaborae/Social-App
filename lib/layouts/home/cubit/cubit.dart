@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -95,5 +96,58 @@ class HomeCubit extends Cubit<HomeStates> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     coverImage = File(pickedFile!.path);
     emit(PickCoverImageState());
+  }
+
+//  ---------------- Firebase Storage, Upload Profile Image
+
+  String? uploadedProfileImageUrl;
+
+  void uploadProfileImage() {
+    emit(UploadUserImagesLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('users/${Uri.file(profileImage!.path).pathSegments.last}')
+        .putFile(profileImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        emit(UploadProfileImageSuccessState());
+      }).catchError((error) {
+        emit(UploadProfileImageErrorState());
+      });
+    }).catchError((error) {
+      emit(UploadProfileImageErrorState());
+    });
+  }
+
+//  ---------------- Firebase Storage, Upload Cover Image
+
+  String? uploadedCoverImageUrl;
+
+  void uploadCoverImage() {
+    emit(UploadUserImagesLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('users/${Uri.file(coverImage!.path).pathSegments.last}')
+        .putFile(coverImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        uploadedCoverImageUrl = value;
+        emit(UploadCoverImageSuccessState());
+      }).catchError((error) {
+        emit(UploadCoverImageErrorState());
+      });
+    }).catchError((error) {
+      emit(UploadCoverImageErrorState());
+    });
+  }
+
+//  ---------------- Firebase Storage, Upload User Images
+
+  void uploadUserImages() {
+    emit(UploadUserImagesLoadingState());
+    uploadProfileImage();
+    uploadCoverImage();
   }
 }

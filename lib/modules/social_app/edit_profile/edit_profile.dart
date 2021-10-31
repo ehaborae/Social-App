@@ -34,7 +34,12 @@ class EditProfile extends StatelessWidget {
             ),
             actions: [
               defaultTextButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (profileImage != null) cubit.uploadProfileImage();
+                  if (coverImage != null) cubit.uploadCoverImage();
+                  if (profileImage != null && coverImage != null)
+                    cubit.uploadUserImages();
+                },
                 text: 'update',
               ),
               SizedBox(
@@ -46,6 +51,12 @@ class EditProfile extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
+                if (state is UploadUserImagesLoadingState)
+                  LinearProgressIndicator(),
+                if (state is UploadUserImagesLoadingState)
+                  SizedBox(
+                    height: 5.0,
+                  ),
                 Container(
                   height: 200.0,
                   child: Stack(
