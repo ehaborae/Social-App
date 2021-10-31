@@ -20,6 +20,9 @@ class EditProfile extends StatelessWidget {
         var profileImage = cubit.profileImage;
         var coverImage = cubit.coverImage;
         var userModel = cubit.userModel;
+        nameController.text = userModel!.name!;
+        bioController.text = userModel.bio!;
+
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -60,7 +63,7 @@ class EditProfile extends StatelessWidget {
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 child: Image(
                                   image: NetworkImage(
-                                    '${userModel!.cover}',
+                                    '${userModel.cover}',
                                   ),
                                   height: 160.0,
                                   width: double.infinity,
@@ -77,7 +80,7 @@ class EditProfile extends StatelessWidget {
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 child: Image(
                                   image: FileImage(
-                                    File(coverImage!.path),
+                                    File(coverImage.path),
                                   ),
                                   height: 160.0,
                                   width: double.infinity,
@@ -110,13 +113,11 @@ class EditProfile extends StatelessWidget {
                             CircleAvatar(
                               radius: 62.0,
                               backgroundColor:
-                              Theme
-                                  .of(context)
-                                  .scaffoldBackgroundColor,
+                                  Theme.of(context).scaffoldBackgroundColor,
                               child: CircleAvatar(
                                 radius: 60.0,
                                 backgroundImage: NetworkImage(
-                                  '${userModel!.image}',
+                                  '${userModel.image}',
                                 ),
                               ),
                             ),
@@ -124,9 +125,7 @@ class EditProfile extends StatelessWidget {
                             CircleAvatar(
                               radius: 62.0,
                               backgroundColor:
-                              Theme
-                                  .of(context)
-                                  .scaffoldBackgroundColor,
+                                  Theme.of(context).scaffoldBackgroundColor,
                               child: CircleAvatar(
                                 radius: 60.0,
                                 backgroundImage: FileImage(
