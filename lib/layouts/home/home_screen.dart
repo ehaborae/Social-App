@@ -11,10 +11,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
-        // if(HomeCubit.get(context).currentIndex == 2){
-        //   HomeCubit.get(context).currentIndex = 0;
-        //   navigateTo(context, NewPost());
-        // }
         if (state is OpenNewPostScreenState) {
           navigateTo(context, NewPost());
         }
@@ -59,27 +55,33 @@ class HomeScreen extends StatelessWidget {
             items: [
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.home_outlined,
+                    cubit.currentIndex == 0
+                        ? Icons.home
+                        : Icons.home_outlined,
                   ),
                   label: 'Home'),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.chat_outlined,
+                    cubit.currentIndex == 1 ?
+                    Icons.chat:Icons.chat_outlined,
                   ),
                   label: 'Chats'),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.post_add_outlined,
+                    cubit.currentIndex == 2 ?
+                    Icons.post_add : Icons.post_add_outlined,
                   ),
                   label: 'Post'),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.location_on_outlined,
+                    cubit.currentIndex == 3 ?
+                    Icons.location_on : Icons.location_on_outlined,
                   ),
                   label: 'Users'),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.settings_outlined,
+                    cubit.currentIndex == 4 ?
+                    Icons.settings : Icons.settings_outlined,
                   ),
                   label: 'Settings'),
             ],

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/models/social/post_model.dart';
 import 'package:social/models/social/user_model.dart';
 import 'package:social/modules/social_app/chats/chats.dart';
 import 'package:social/modules/social_app/feeds/feeds.dart';
@@ -195,6 +196,7 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 //  ---------------- Firebase Storage, Update user date
+
   void updateUserDate({
     required String name,
     required String phone,
@@ -207,29 +209,88 @@ class HomeCubit extends Cubit<HomeStates> {
         phone: phone,
         bio: bio,
       );
-    } else if (coverImage != null) {
+    }
+    if (coverImage != null) {
       uploadCoverImage(
         name: name,
         phone: phone,
         bio: bio,
       );
-    } else if (profileImage != null && coverImage != null) {
-      uploadProfileImage(
-        name: name,
-        phone: phone,
-        bio: bio,
-      );
-      uploadCoverImage(
-        name: name,
-        phone: phone,
-        bio: bio,
-      );
-    } else {
+    }
+    if (coverImage == null && profileImage == null) {
       updateUser(
         bio: bio,
         name: name,
         phone: phone,
       );
     }
+  }
+
+//  Create post --------------
+  //  1-  pic your image
+  //  2-  upload that image and get it path to create post with image
+  //  3-  upload post if no image
+
+
+//  1- pic image and save it in postImage
+  File? postImage;
+
+  Future<void> pickPostImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    postImage = File(pickedFile!.path);
+    emit(PicPostImageState());
+  }
+
+  //  2- upload that image and create it is path and get that path as parameter to create post with image
+
+  void createPostImage({
+    required String dataTime,
+    required String text,
+  }) {
+    emit(CreatePostLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('posts/${Uri.file(postImage!.path).pathSegments.last}')
+        .putFile(postImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        createPost(
+          text: text,
+          dataTime: dataTime,
+          postImage: value,
+        );
+      }).catchError((error) {
+        emit(CreatePostErrorState());
+      });
+    }).catchError((error) {
+      emit(CreatePostErrorState());
+    });
+  }
+
+  //  3- upload post if no image
+  void createPost({
+    required String dataTime,
+    required String text,
+    String? postImage,
+  }) {
+    PostModel postModel = PostModel(
+      name: userModel!.name,
+      image: userModel!.image,
+      uId: userModel!.uId,
+      text: text,
+      dateTime: dataTime,
+      postImage: postImage ?? null,
+    );
+    emit(CreatePostLoadingState());
+    FirebaseFirestore.instance
+        .collection('posts')
+        .add(postModel.toMap())
+        .then((value) {
+      emit(CreatePostSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(CreatePostErrorState());
+    });
   }
 }

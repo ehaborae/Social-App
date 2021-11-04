@@ -60,3 +60,15 @@ class UploadCoverImageErrorState extends HomeStates {}
 //  ---------------- Update User
 
 class UpdateUserErrorState extends HomeStates {}
+
+//  ---------------- Create Post
+
+
+
+class PicPostImageState extends HomeStates {}
+
+class CreatePostLoadingState extends HomeStates {}
+
+class CreatePostSuccessState extends HomeStates {}
+
+class CreatePostErrorState extends HomeStates {}
