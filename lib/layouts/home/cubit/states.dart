@@ -63,12 +63,23 @@ class UpdateUserErrorState extends HomeStates {}
 
 //  ---------------- Create Post
 
-
-
 class PicPostImageState extends HomeStates {}
+
+class RemovePostImageState extends HomeStates {}
 
 class CreatePostLoadingState extends HomeStates {}
 
 class CreatePostSuccessState extends HomeStates {}
 
 class CreatePostErrorState extends HomeStates {}
+
+//  ---------------- Get User Data
+class HomeGetPostsLoadingState extends HomeStates {}
+
+class HomeGetPostsSuccessState extends HomeStates {}
+
+class HomeGetPostsErrorInitialState extends HomeStates {
+  final String error;
+
+  HomeGetPostsErrorInitialState(this.error);
+}

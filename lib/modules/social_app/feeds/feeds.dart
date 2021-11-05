@@ -111,74 +111,77 @@ class Feeds extends StatelessWidget {
                       fontSize: 16.0,
                     ),
               ),
-              Container(
-                padding: const EdgeInsetsDirectional.only(bottom: 5.0),
-                width: double.infinity,
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsetsDirectional.only(end: 2.0),
-                      height: 20.0,
-                      child: MaterialButton(
-                        minWidth: 0.0,
-                        padding: EdgeInsetsDirectional.zero,
-                        onPressed: () {},
-                        height: 20.0,
-                        child: Text(
-                          '#mobile_app_dev',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                                height: 1.4,
-                                fontSize: 15.0,
-                                color: Colors.blue,
-                              ),
-                        ),
-                      ),
+              // Container(
+              //   padding: const EdgeInsetsDirectional.only(bottom: 5.0),
+              //   width: double.infinity,
+              //   child: Wrap(
+              //     crossAxisAlignment: WrapCrossAlignment.start,
+              //     children: [
+              //       Container(
+              //         padding: const EdgeInsetsDirectional.only(end: 2.0),
+              //         height: 20.0,
+              //         child: MaterialButton(
+              //           minWidth: 0.0,
+              //           padding: EdgeInsetsDirectional.zero,
+              //           onPressed: () {},
+              //           height: 20.0,
+              //           child: Text(
+              //             '#mobile_app_dev',
+              //             style: Theme.of(context).textTheme.caption!.copyWith(
+              //                   height: 1.4,
+              //                   fontSize: 15.0,
+              //                   color: Colors.blue,
+              //                 ),
+              //           ),
+              //         ),
+              //       ),
+              //       Container(
+              //         padding: const EdgeInsetsDirectional.only(end: 2.0),
+              //         height: 20.0,
+              //         child: MaterialButton(
+              //           padding: EdgeInsets.zero,
+              //           onPressed: () {},
+              //           height: 20.0,
+              //           minWidth: 0.0,
+              //           child: Text(
+              //             '#flutter',
+              //             style: Theme.of(context).textTheme.caption!.copyWith(
+              //                 height: 1.4, fontSize: 15.0, color: Colors.blue),
+              //           ),
+              //         ),
+              //       ),
+              //       Container(
+              //         padding: const EdgeInsetsDirectional.only(end: 2.0),
+              //         height: 20.0,
+              //         child: MaterialButton(
+              //           padding: EdgeInsets.zero,
+              //           onPressed: () {},
+              //           height: 20.0,
+              //           minWidth: 0.0,
+              //           child: Text(
+              //             '#software',
+              //             style: Theme.of(context).textTheme.caption!.copyWith(
+              //                 height: 1.4, fontSize: 15.0, color: Colors.blue),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Card(
+                  elevation: 0.0,
+                  margin: EdgeInsets.zero,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Image(
+                    image: NetworkImage(
+                      'https://image.freepik.com/free-photo/woman-covering-her-eye-looking-away_23-2148255271.jpg',
                     ),
-                    Container(
-                      padding: const EdgeInsetsDirectional.only(end: 2.0),
-                      height: 20.0,
-                      child: MaterialButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        height: 20.0,
-                        minWidth: 0.0,
-                        child: Text(
-                          '#flutter',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                              height: 1.4, fontSize: 15.0, color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsetsDirectional.only(end: 2.0),
-                      height: 20.0,
-                      child: MaterialButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        height: 20.0,
-                        minWidth: 0.0,
-                        child: Text(
-                          '#software',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                              height: 1.4, fontSize: 15.0, color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                elevation: 0.0,
-                margin: EdgeInsets.zero,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image(
-                  image: NetworkImage(
-                    'https://image.freepik.com/free-photo/woman-covering-her-eye-looking-away_23-2148255271.jpg',
+                    height: 120.0,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                  height: 120.0,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
                 ),
               ),
               Row(

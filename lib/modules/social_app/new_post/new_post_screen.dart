@@ -1,14 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
 import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/shared/components/components.dart';
 
 class NewPost extends StatelessWidget {
+  var postController = TextEditingController();
+  var now = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var cubit = HomeCubit.get(context);
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -18,11 +25,38 @@ class NewPost extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
+            actions: [
+              defaultTextButton(
+                onPressed: () {
+                  if (cubit.postImage == null) {
+                    cubit.createPost(
+                      dataTime: now.toString(),
+                      text: postController.text,
+                    );
+                  } else {
+                    cubit.createImagedPost(
+                      dataTime: now.toString(),
+                      text: postController.text,
+                    );
+                  }
+                },
+                text: 'Post',
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+                if (state is CreatePostLoadingState)
+                  Column(
+                    children: [
+                      LinearProgressIndicator(),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                    ],
+                  ),
                 Row(
                   children: [
                     CircleAvatar(
@@ -66,22 +100,67 @@ class NewPost extends StatelessWidget {
                 ),
                 Expanded(
                   child: TextFormField(
+                    controller: postController,
                     decoration: InputDecoration(
                       hintText: 'What is on your mind ...',
                       border: InputBorder.none,
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                if (cubit.postImage != null)
+                  Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Card(
+                        elevation: 0.0,
+                        margin: EdgeInsets.symmetric(horizontal: 0.0),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image(
+                          image: FileImage(
+                            File(cubit.postImage!.path),
+                          ),
+                          height: 160.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          radius: 20.0,
+                          backgroundColor: Colors.lightBlue,
+                          child: IconButton(
+                            onPressed: () {
+                              cubit.removePostImage();
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(
+                  height: 10.0,
+                ),
                 Row(
                   children: [
                     Expanded(
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          cubit.pickPostImage();
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.image_outlined,
+                              Icons.add_photo_alternate_outlined,
+                              size: 18.0,
                             ),
                             SizedBox(
                               width: 5.0,

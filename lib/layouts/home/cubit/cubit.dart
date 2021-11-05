@@ -231,7 +231,6 @@ class HomeCubit extends Cubit<HomeStates> {
   //  2-  upload that image and get it path to create post with image
   //  3-  upload post if no image
 
-
 //  1- pic image and save it in postImage
   File? postImage;
 
@@ -241,9 +240,14 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(PicPostImageState());
   }
 
-  //  2- upload that image and create it is path and get that path as parameter to create post with image
+  void removePostImage() {
+    postImage = null;
+    emit(RemovePostImageState());
+  }
 
-  void createPostImage({
+  //  2- upload that image and get it path to create post with image
+
+  void createImagedPost({
     required String dataTime,
     required String text,
   }) {
@@ -291,6 +295,25 @@ class HomeCubit extends Cubit<HomeStates> {
     }).catchError((error) {
       print(error.toString());
       emit(CreatePostErrorState());
+    });
+  }
+
+  //  get posts
+  //  1- create list of PostModel object
+  //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
+
+  //  1-  1- create list of PostModel object
+  List<PostModel> posts = [];
+
+  //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
+  void getPosts() {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      value.docs.forEach((element) {
+        posts.add(PostModel.fromMap(element.data()));
+      });
+      emit(HomeGetPostsSuccessState());
+    }).catchError((error) {
+      emit(HomeGetPostsErrorInitialState(error.toString()));
     });
   }
 }
