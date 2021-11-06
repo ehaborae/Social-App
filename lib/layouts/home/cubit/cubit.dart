@@ -250,6 +250,7 @@ class HomeCubit extends Cubit<HomeStates> {
   void createImagedPost({
     required String dataTime,
     required String text,
+    required BuildContext context,
   }) {
     emit(CreatePostLoadingState());
     firebase_storage.FirebaseStorage.instance
@@ -260,6 +261,7 @@ class HomeCubit extends Cubit<HomeStates> {
       value.ref.getDownloadURL().then((value) {
         print(value);
         createPost(
+          context: context,
           text: text,
           dataTime: dataTime,
           postImage: value,
@@ -276,6 +278,7 @@ class HomeCubit extends Cubit<HomeStates> {
   void createPost({
     required String dataTime,
     required String text,
+    required BuildContext context,
     String? postImage,
   }) {
     PostModel postModel = PostModel(
@@ -291,7 +294,9 @@ class HomeCubit extends Cubit<HomeStates> {
         .collection('posts')
         .add(postModel.toMap())
         .then((value) {
-      emit(CreatePostSuccessState());
+      posts.clear();
+      Navigator.pop(context);
+      getPosts();
     }).catchError((error) {
       print(error.toString());
       emit(CreatePostErrorState());
@@ -311,6 +316,7 @@ class HomeCubit extends Cubit<HomeStates> {
       value.docs.forEach((element) {
         posts.add(PostModel.fromMap(element.data()));
       });
+      print('now you get posts');
       emit(HomeGetPostsSuccessState());
     }).catchError((error) {
       emit(HomeGetPostsErrorInitialState(error.toString()));
