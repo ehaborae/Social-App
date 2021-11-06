@@ -1,0 +1,190 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social/layouts/home/cubit/cubit.dart';
+import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/shared/components/components.dart';
+
+class NewPost extends StatelessWidget {
+  var postController = TextEditingController();
+  var now = DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var cubit = HomeCubit.get(context);
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              'New Post',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            actions: [
+              defaultTextButton(
+                onPressed: () {
+                  if (cubit.postImage == null) {
+                    cubit.createPost(
+                      dataTime: now.toString(),
+                      text: postController.text,
+                    );
+                  } else {
+                    cubit.createImagedPost(
+                      dataTime: now.toString(),
+                      text: postController.text,
+                    );
+                  }
+                },
+                text: 'Post',
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                if (state is CreatePostLoadingState)
+                  Column(
+                    children: [
+                      LinearProgressIndicator(),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                    ],
+                  ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 25.0,
+                      backgroundImage: NetworkImage(
+                        'https://image.freepik.com/free-photo/close-up-woman-inflates-pink-balloon_23-2148255216.jpg',
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Ehab Borae',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(
+                                      height: 1.6,
+                                    ),
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Icon(
+                                Icons.check_circle,
+                                size: 14.0,
+                                color: Colors.blue,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: postController,
+                    decoration: InputDecoration(
+                      hintText: 'What is on your mind ...',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                if (cubit.postImage != null)
+                  Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Card(
+                        elevation: 0.0,
+                        margin: EdgeInsets.symmetric(horizontal: 0.0),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image(
+                          image: FileImage(
+                            File(cubit.postImage!.path),
+                          ),
+                          height: 160.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          radius: 20.0,
+                          backgroundColor: Colors.lightBlue,
+                          child: IconButton(
+                            onPressed: () {
+                              cubit.removePostImage();
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          cubit.pickPostImage();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_photo_alternate_outlined,
+                              size: 18.0,
+                            ),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Text(
+                              'Add photo',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text('# tags'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

@@ -44,7 +44,10 @@ class RegisterCubit extends Cubit<RegisterStates> {
       email: email,
       name: name,
       phone: phone,
+      image: 'https://i.pinimg.com/564x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg',
+      cover: 'https://i.pinimg.com/564x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg',
       uId: uId,
+      bio: 'Write your bio...',
     );
 
     FirebaseFirestore.instance
