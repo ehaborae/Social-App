@@ -11,10 +11,13 @@ import 'package:social/models/social/post_model.dart';
 import 'package:social/models/social/user_model.dart';
 import 'package:social/modules/social_app/chats/chats.dart';
 import 'package:social/modules/social_app/feeds/feeds.dart';
+import 'package:social/modules/social_app/login/login_screen.dart';
 import 'package:social/modules/social_app/new_post/new_post_screen.dart';
 import 'package:social/modules/social_app/settings/settings.dart';
 import 'package:social/modules/social_app/users/users.dart';
+import 'package:social/shared/components/components.dart';
 import 'package:social/shared/components/constants.dart';
+import 'package:social/shared/network/local/cache_helper.dart';
 
 class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(HomeInitialState());
@@ -69,6 +72,7 @@ class HomeCubit extends Cubit<HomeStates> {
   ];
 
   void changeBottomNaveBare(int index) {
+    if (index == 1) getAllUsers();
     if (index == 2)
       emit(OpenNewPostScreenState());
     else {
@@ -294,7 +298,6 @@ class HomeCubit extends Cubit<HomeStates> {
         .collection('posts')
         .add(postModel.toMap())
         .then((value) {
-      posts.clear();
       Navigator.pop(context);
       getPosts();
     }).catchError((error) {
@@ -312,6 +315,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
   //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
   void getPosts() {
+    posts.clear();
     FirebaseFirestore.instance.collection('posts').get().then((value) {
       value.docs.forEach((element) {
         posts.add(PostModel.fromMap(element.data()));
@@ -323,24 +327,68 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-
   //  get all users
   //  1- create list of UserModel object
   //  2- get all docs from user collection and adding one by one to that list (users) using forEach
 
   //  1-  1- create list of PostModel object
-  List<UserModel> usres = [];
+  List<UserModel> users = [];
 
   //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
   void getAllUsers() {
-    FirebaseFirestore.instance.collection('users').get().then((value) {
-      value.docs.forEach((element) {
-        usres.add(UserModel.fromMap(element.data()));
+    if (users.length == 0)
+      FirebaseFirestore.instance.collection('users').get().then((value) {
+        value.docs.forEach((element) {
+          if (element.data()['uId'] != userModel!.uId)
+            users.add(UserModel.fromMap(element.data()));
+        });
+        print('now you get posts');
+        emit(HomeGetPostsSuccessState());
+      }).catchError((error) {
+        emit(HomeGetPostsErrorInitialState(error.toString()));
       });
-      print('now you get posts');
-      emit(HomeGetPostsSuccessState());
-    }).catchError((error) {
-      emit(HomeGetPostsErrorInitialState(error.toString()));
+  }
+
+  void signOut(context) {
+    emit(LogoutLoadingState());
+    CacheHelper.removeData(key: 'uId').then((value) {
+      if (value) {
+        showToast(
+            message: 'Sign out Successfully', toastStates: ToastStates.SUCCESS);
+        navigateAndFinish(context, LoginScreen());
+        userModel = null;
+        emit(LogoutSuccessState());
+      }
+    }).catchError((error){
+      emit(LogoutErrorInitialState(error.toString()));
     });
   }
+
+  void userLogin({
+    required String email,
+    required String password,
+  }) {
+    emit(LoginLoadingState());
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) {
+      print(value.user!.email);
+      print(value.user!.uid);
+      uId = value.user!.uid;
+      getUserDate();
+    }).catchError((error) {
+      emit(LoginErrorState(error.toString()));
+    });
+  }
+
+  IconData suffix = Icons.visibility;
+  bool isPassword = true;
+
+  void changePasswordVisibility() {
+    isPassword = !isPassword;
+    suffix =
+    isPassword ? Icons.visibility : Icons.visibility_off;
+    emit(LoginChangePasswordVisibilityState());
+  }
+
 }

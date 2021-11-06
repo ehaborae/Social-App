@@ -1,8 +1,11 @@
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
 import 'package:social/layouts/home/cubit/states.dart';
 import 'package:social/models/social/user_model.dart';
+import 'package:social/modules/social_app/open_chat/open_chat_screen.dart';
+import 'package:social/shared/components/components.dart';
 
 class Chats extends StatelessWidget {
   @override
@@ -10,25 +13,33 @@ class Chats extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: ListView.separated(
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) => buildChatItem(context, HomeCubit.get(context).usres[index]),
-            separatorBuilder: (context, index) => Container(
-              width: double.infinity,
-              height: 1,
-              color: Colors.grey[200],
+        return BuildCondition(
+          // ignore: unnecessary_null_comparison
+          condition: HomeCubit.get(context).users.length != 0,
+          builder: (context) => Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) =>
+                  buildChatItem(context, HomeCubit.get(context).users[index]),
+              separatorBuilder: (context, index) => Container(
+                width: double.infinity,
+                height: 1,
+                color: Colors.grey[200],
+              ),
+              itemCount: HomeCubit.get(context).users.length,
             ),
-            itemCount: HomeCubit.get(context).usres.length,
           ),
+          fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
 
   Widget buildChatItem(BuildContext context, UserModel userModel) => InkWell(
-        onTap: () {},
+        onTap: () {
+          navigateTo(context, OpenChat(userModel: userModel,));
+        },
         child: Container(
           padding: const EdgeInsets.all(5.0),
           height: 70.0,

@@ -72,7 +72,7 @@ class Feeds extends StatelessWidget {
                   CircleAvatar(
                     radius: 25.0,
                     backgroundImage: NetworkImage(
-                      '${userModel.image}',
+                      '${postModel.image}',
                     ),
                   ),
                   SizedBox(
@@ -269,7 +269,7 @@ class Feeds extends StatelessWidget {
                           CircleAvatar(
                             radius: 15.0,
                             backgroundImage: NetworkImage(
-                              '${userModel.image}',
+                              '${postModel.image}',
                             ),
                           ),
                           SizedBox(
