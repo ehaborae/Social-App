@@ -83,3 +83,38 @@ class HomeGetPostsErrorInitialState extends HomeStates {
 
   HomeGetPostsErrorInitialState(this.error);
 }
+//  ---------------- Get All Users
+class HomeGetAllUsersLoadingState extends HomeStates {}
+
+class HomeGetAllUsersSuccessState extends HomeStates {}
+
+class HomeGetAllUsersErrorInitialState extends HomeStates {
+  final String error;
+
+  HomeGetAllUsersErrorInitialState(this.error);
+}
+
+//  ---------------- Logout
+class LogoutLoadingState extends HomeStates {}
+
+class LogoutSuccessState extends HomeStates {}
+
+class LogoutErrorInitialState extends HomeStates {
+  final String error;
+
+  LogoutErrorInitialState(this.error);
+}
+
+
+
+class LoginLoadingState extends HomeStates {}
+
+class LoginSuccessState extends HomeStates {}
+
+class LoginErrorState extends HomeStates {
+  final String error;
+
+  LoginErrorState(this.error);
+}
+
+class LoginChangePasswordVisibilityState extends HomeStates {}

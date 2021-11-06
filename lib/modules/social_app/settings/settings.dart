@@ -1,3 +1,4 @@
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
@@ -173,6 +174,21 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              BuildCondition(
+                condition: state is LogoutLoadingState,
+                builder: (context) =>
+                    Center(child: CircularProgressIndicator()),
+                fallback: (context) => defaultButton(
+                  function: () {
+                    HomeCubit.get(context).signOut(context);
+                  },
+                  text: 'logout',
+                  background: Colors.red,
+                ),
               ),
             ],
           ),
