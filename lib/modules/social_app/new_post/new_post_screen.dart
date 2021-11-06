@@ -32,9 +32,11 @@ class NewPost extends StatelessWidget {
                     cubit.createPost(
                       dataTime: now.toString(),
                       text: postController.text,
+                      context: context,
                     );
                   } else {
                     cubit.createImagedPost(
+                      context: context,
                       dataTime: now.toString(),
                       text: postController.text,
                     );
@@ -62,7 +64,7 @@ class NewPost extends StatelessWidget {
                     CircleAvatar(
                       radius: 25.0,
                       backgroundImage: NetworkImage(
-                        'https://image.freepik.com/free-photo/close-up-woman-inflates-pink-balloon_23-2148255216.jpg',
+                        '${cubit.userModel!.image}',
                       ),
                     ),
                     SizedBox(
@@ -75,7 +77,7 @@ class NewPost extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Ehab Borae',
+                                '${cubit.userModel!.name}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText1!
@@ -99,11 +101,13 @@ class NewPost extends StatelessWidget {
                   ],
                 ),
                 Expanded(
-                  child: TextFormField(
-                    controller: postController,
-                    decoration: InputDecoration(
-                      hintText: 'What is on your mind ...',
-                      border: InputBorder.none,
+                  child: Container(
+                    child: TextFormField(
+                      controller: postController,
+                      decoration: InputDecoration(
+                        hintText: 'What is on your mind ...',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),

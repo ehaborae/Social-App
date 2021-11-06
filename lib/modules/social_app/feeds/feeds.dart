@@ -1,40 +1,60 @@
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social/layouts/home/cubit/cubit.dart';
+import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/models/social/post_model.dart';
 
 class Feeds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            Card(
-              elevation: 5.0,
-              margin: EdgeInsets.symmetric(horizontal: 8.0),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Image(
-                image: NetworkImage(
-                  'https://image.freepik.com/free-photo/woman-covering-her-eye-looking-away_23-2148255271.jpg',
+    var cubit = HomeCubit.get(context);
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state){},
+      builder: (context, state){
+        return Scaffold(
+          body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                Card(
+                  elevation: 5.0,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Image(
+                    image: NetworkImage(
+                      'https://image.freepik.com/free-photo/woman-covering-her-eye-looking-away_23-2148255271.jpg',
+                    ),
+                    height: 200.0,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                height: 200.0,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+                BuildCondition(
+                  condition: cubit.posts.length == 0,
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Text('No posts to view, create some',style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.grey)),
+                  ),
+                  fallback: (context) => ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => buildPostItem(context, cubit.posts[index]),
+                    itemCount: cubit.posts.length,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+              ],
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => buildPostItem(context),
-              itemCount: 10,
-            ),
-            SizedBox(height: 8.0,),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildPostItem(context) => Card(
+  Widget buildPostItem(context, PostModel postModel) => Card(
         elevation: 5.0,
         margin: EdgeInsetsDirectional.only(
           start: 8.0,
@@ -51,7 +71,7 @@ class Feeds extends StatelessWidget {
                   CircleAvatar(
                     radius: 25.0,
                     backgroundImage: NetworkImage(
-                      'https://image.freepik.com/free-photo/close-up-woman-inflates-pink-balloon_23-2148255216.jpg',
+                      '${postModel.image}',
                     ),
                   ),
                   SizedBox(
@@ -64,7 +84,7 @@ class Feeds extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              'Ehab Borae',
+                              '${postModel.name}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
@@ -105,7 +125,7 @@ class Feeds extends StatelessWidget {
                 height: 10.0,
               ),
               Text(
-                'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ',
+                '${postModel.text}',
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
                       height: 1.4,
                       fontSize: 16.0,
@@ -168,22 +188,23 @@ class Feeds extends StatelessWidget {
               //     ],
               //   ),
               // ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Card(
-                  elevation: 0.0,
-                  margin: EdgeInsets.zero,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: Image(
-                    image: NetworkImage(
-                      'https://image.freepik.com/free-photo/woman-covering-her-eye-looking-away_23-2148255271.jpg',
+              if (postModel.postImage != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Card(
+                    elevation: 0.0,
+                    margin: EdgeInsets.zero,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Image(
+                      image: NetworkImage(
+                        '${postModel.postImage}',
+                      ),
+                      height: 120.0,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
-                    height: 120.0,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
               Row(
                 children: [
                   Expanded(
@@ -245,9 +266,9 @@ class Feeds extends StatelessWidget {
                       child: Row(
                         children: [
                           CircleAvatar(
-                            radius: 20.0,
+                            radius: 15.0,
                             backgroundImage: NetworkImage(
-                              'https://image.freepik.com/free-photo/close-up-woman-inflates-pink-balloon_23-2148255216.jpg',
+                              '${postModel.image}',
                             ),
                           ),
                           SizedBox(
