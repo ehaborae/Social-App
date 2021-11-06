@@ -83,3 +83,13 @@ class HomeGetPostsErrorInitialState extends HomeStates {
 
   HomeGetPostsErrorInitialState(this.error);
 }
+//  ---------------- Get All Users
+class HomeGetAllUsersLoadingState extends HomeStates {}
+
+class HomeGetAllUsersSuccessState extends HomeStates {}
+
+class HomeGetAllUsersErrorInitialState extends HomeStates {
+  final String error;
+
+  HomeGetAllUsersErrorInitialState(this.error);
+}

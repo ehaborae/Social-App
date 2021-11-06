@@ -322,4 +322,25 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(HomeGetPostsErrorInitialState(error.toString()));
     });
   }
+
+
+  //  get all users
+  //  1- create list of UserModel object
+  //  2- get all docs from user collection and adding one by one to that list (users) using forEach
+
+  //  1-  1- create list of PostModel object
+  List<UserModel> usres = [];
+
+  //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
+  void getAllUsers() {
+    FirebaseFirestore.instance.collection('users').get().then((value) {
+      value.docs.forEach((element) {
+        usres.add(UserModel.fromMap(element.data()));
+      });
+      print('now you get posts');
+      emit(HomeGetPostsSuccessState());
+    }).catchError((error) {
+      emit(HomeGetPostsErrorInitialState(error.toString()));
+    });
+  }
 }

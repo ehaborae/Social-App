@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/layouts/home/cubit/cubit.dart';
 import 'package:social/layouts/home/cubit/states.dart';
 import 'package:social/models/social/post_model.dart';
+import 'package:social/models/social/user_model.dart';
 
 class Feeds extends StatelessWidget {
   @override
@@ -39,7 +40,7 @@ class Feeds extends StatelessWidget {
                   fallback: (context) => ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => buildPostItem(context, cubit.posts[index]),
+                    itemBuilder: (context, index) => buildPostItem(context, cubit.posts[index], cubit.userModel!),
                     itemCount: cubit.posts.length,
                   ),
                 ),
@@ -54,7 +55,7 @@ class Feeds extends StatelessWidget {
     );
   }
 
-  Widget buildPostItem(context, PostModel postModel) => Card(
+  Widget buildPostItem(context, PostModel postModel, UserModel userModel) => Card(
         elevation: 5.0,
         margin: EdgeInsetsDirectional.only(
           start: 8.0,
@@ -71,7 +72,7 @@ class Feeds extends StatelessWidget {
                   CircleAvatar(
                     radius: 25.0,
                     backgroundImage: NetworkImage(
-                      '${postModel.image}',
+                      '${userModel.image}',
                     ),
                   ),
                   SizedBox(
@@ -268,7 +269,7 @@ class Feeds extends StatelessWidget {
                           CircleAvatar(
                             radius: 15.0,
                             backgroundImage: NetworkImage(
-                              '${postModel.image}',
+                              '${userModel.image}',
                             ),
                           ),
                           SizedBox(
