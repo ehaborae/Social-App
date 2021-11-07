@@ -1,13 +1,10 @@
 import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social/layouts/home/home_screen.dart';
+import 'package:social/layouts/home/cubit/cubit.dart';
+import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/modules/social_app/login/login_screen.dart';
 import 'package:social/shared/components/components.dart';
-import 'package:social/shared/components/constants.dart';
-import 'package:social/shared/network/local/cache_helper.dart';
-
-import 'cubit/cubit.dart';
-import 'cubit/states.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -20,18 +17,13 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => RegisterCubit(),
-      child: BlocConsumer<RegisterCubit, RegisterStates>(
+      create: (BuildContext context) => HomeCubit(),
+      child: BlocConsumer<HomeCubit, HomeStates>(
         listener: (context, state) {
           if (state is RegisterErrorState) {
             showToast(message: state.error, toastStates: ToastStates.ERROR);
           } else if (state is CreateUserSuccessState) {
-            CacheHelper.saveData(key: 'uId', value: uId).then((value) {
-              print('done --- $uId');
-              navigateAndFinish(context, HomeScreen());
-            }).catchError((error) {
-              print(error.toString());
-            });
+            navigateAndFinish(context, LoginScreen());
           }
         },
         builder: (context, state) {
@@ -103,12 +95,13 @@ class RegisterScreen extends StatelessWidget {
                           height: 15.0,
                         ),
                         defaultFormField(
-                            isPassword: RegisterCubit.get(context).isPassword,
+                            isPassword:
+                                HomeCubit.get(context).isPasswordRegister,
                             suffixPressed: () {
-                              RegisterCubit.get(context)
-                                  .changePasswordVisibility();
+                              HomeCubit.get(context)
+                                  .changePasswordVisibilityRegister();
                             },
-                            suffix: RegisterCubit.get(context).suffix,
+                            suffix: HomeCubit.get(context).suffixRegister,
                             controller: passwordController,
                             label: 'Password',
                             prefix: Icons.lock,
@@ -126,7 +119,7 @@ class RegisterScreen extends StatelessWidget {
                           builder: (context) => defaultButton(
                             function: () {
                               if (formKey.currentState!.validate()) {
-                                RegisterCubit.get(context).userRegister(
+                                HomeCubit.get(context).userRegister(
                                   email: emailController.text,
                                   name: nameController.text,
                                   phone: phoneController.text,

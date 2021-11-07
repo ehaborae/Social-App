@@ -126,3 +126,27 @@ class SendMessageErrorState extends HomeStates {}
 
 //  receive chats
 class GetMessageSuccessState extends HomeStates {}
+
+
+  //  register
+
+class RegisterInitialState extends HomeStates {}
+
+class RegisterLoadingState extends HomeStates {}
+
+class RegisterSuccessState extends HomeStates {}
+
+class RegisterErrorState extends HomeStates {
+  final String error;
+
+  RegisterErrorState(this.error);
+}
+class CreateUserSuccessState extends HomeStates {}
+
+class CreateUserErrorState extends HomeStates {
+  final String error;
+
+  CreateUserErrorState(this.error);
+}
+
+class RegisterChangePasswordVisibilityState extends HomeStates {}

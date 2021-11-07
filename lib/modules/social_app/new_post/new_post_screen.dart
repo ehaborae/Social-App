@@ -41,6 +41,7 @@ class NewPost extends StatelessWidget {
                       text: postController.text,
                     );
                   }
+                  postController.clear();
                 },
                 text: 'Post',
               ),

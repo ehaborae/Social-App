@@ -317,7 +317,14 @@ class HomeCubit extends Cubit<HomeStates> {
   //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
   void getPosts() {
     posts.clear();
-    FirebaseFirestore.instance.collection('posts').get().then((value) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy(
+          'dateTime',
+          descending: true,
+        )
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         posts.add(PostModel.fromMap(element.data()));
       });
@@ -337,17 +344,17 @@ class HomeCubit extends Cubit<HomeStates> {
 
   //  2- get all docs from posts collection and adding one by one to that list (posts) using forEach
   void getAllUsers() {
-    if (users.length == 0)
-      FirebaseFirestore.instance.collection('users').get().then((value) {
-        value.docs.forEach((element) {
-          if (element.data()['uId'] != userModel!.uId)
-            users.add(UserModel.fromMap(element.data()));
-        });
-        print('now you get posts');
-        emit(HomeGetPostsSuccessState());
-      }).catchError((error) {
-        emit(HomeGetPostsErrorInitialState(error.toString()));
+    users.clear();
+    FirebaseFirestore.instance.collection('users').get().then((value) {
+      value.docs.forEach((element) {
+        if (element.data()['uId'] != userModel!.uId)
+          users.add(UserModel.fromMap(element.data()));
       });
+      print('now you get posts');
+      emit(HomeGetPostsSuccessState());
+    }).catchError((error) {
+      emit(HomeGetPostsErrorInitialState(error.toString()));
+    });
   }
 
   void signOut(context) {
@@ -365,6 +372,7 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+  // login
   void userLogin({
     required String email,
     required String password,
@@ -391,7 +399,7 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(LoginChangePasswordVisibilityState());
   }
 
-  //  chats
+  //   send chats
 
   void sendMessage({
     required String message,
@@ -430,5 +438,93 @@ class HomeCubit extends Cubit<HomeStates> {
     }).catchError((error) {
       emit(SendMessageErrorState());
     });
+  }
+
+  //  get messages
+
+  List<MessageModel> messages = [];
+
+  void getMessages({
+    required String receiverId,
+  }) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel!.uId)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      messages.clear();
+      event.docs.forEach((element) {
+        messages.add(MessageModel.fromMap(element.data()));
+      });
+      emit(GetMessageSuccessState());
+    });
+  }
+
+  //  register
+  void userRegister({
+    required String email,
+    required String password,
+    required String name,
+    required String phone,
+  }) {
+    emit(RegisterLoadingState());
+
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) {
+      print(value.user!.email);
+      print(value.user!.uid);
+      userCreate(
+        uId: value.user!.uid,
+        email: email,
+        phone: phone,
+        name: name,
+      );
+    }).catchError((error) {
+      emit(RegisterErrorState(error.toString()));
+    });
+  }
+
+  void userCreate({
+    required String email,
+    required String uId,
+    required String name,
+    required String phone,
+  }) {
+    UserModel userModel = UserModel(
+      email: email,
+      name: name,
+      phone: phone,
+      image:
+          'https://i.pinimg.com/564x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg',
+      cover:
+          'https://i.pinimg.com/564x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg',
+      uId: uId,
+      bio: 'Write your bio...',
+    );
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .set(userModel.toMap())
+        .then((value) {
+      emit(CreateUserSuccessState());
+    }).catchError((error) {
+      emit(CreateUserErrorState(error.toString()));
+    });
+  }
+
+  IconData suffixRegister = Icons.visibility;
+  bool isPasswordRegister = true;
+
+  void changePasswordVisibilityRegister() {
+    isPasswordRegister = !isPasswordRegister;
+    suffixRegister =
+        isPasswordRegister ? Icons.visibility : Icons.visibility_off;
+    emit(RegisterChangePasswordVisibilityState());
   }
 }
