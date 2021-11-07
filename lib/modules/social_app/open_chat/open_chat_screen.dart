@@ -129,8 +129,63 @@ class OpenChat extends StatelessWidget {
                     ],
                   ),
                 ),
-                fallback: (context) =>
-                    Center(child: CircularProgressIndicator()),
+                fallback: (context) => Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Center(
+                            child: Text(
+                          'No messages sent, send one',
+                          style: Theme.of(context).textTheme.headline4!.copyWith(fontSize: 30.0,),
+                        )),
+                      ),
+                      Container(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        padding: EdgeInsetsDirectional.only(
+                          start: 10.0,
+                        ),
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: messageController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Type your message here ...',
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 50.0,
+                              height: double.infinity,
+                              color: Colors.blue,
+                              child: IconButton(
+                                onPressed: () {
+                                  cubit.sendMessage(
+                                    message: messageController.text,
+                                    dateTime: DateTime.now().toString(),
+                                    receiverId: userModel.uId!,
+                                  );
+                                  messageController.clear();
+                                },
+                                icon: Icon(
+                                  Icons.send_outlined,
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             );
           },
