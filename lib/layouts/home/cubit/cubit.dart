@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social/layouts/home/cubit/states.dart';
+import 'package:social/models/social/message_model.dart';
 import 'package:social/models/social/post_model.dart';
 import 'package:social/models/social/user_model.dart';
 import 'package:social/modules/social_app/chats/chats.dart';
@@ -359,7 +360,7 @@ class HomeCubit extends Cubit<HomeStates> {
         userModel = null;
         emit(LogoutSuccessState());
       }
-    }).catchError((error){
+    }).catchError((error) {
       emit(LogoutErrorInitialState(error.toString()));
     });
   }
@@ -386,9 +387,48 @@ class HomeCubit extends Cubit<HomeStates> {
 
   void changePasswordVisibility() {
     isPassword = !isPassword;
-    suffix =
-    isPassword ? Icons.visibility : Icons.visibility_off;
+    suffix = isPassword ? Icons.visibility : Icons.visibility_off;
     emit(LoginChangePasswordVisibilityState());
   }
 
+  //  chats
+
+  void sendMessage({
+    required String message,
+    required String dateTime,
+    required String receiverId,
+  }) {
+    MessageModel messageModel = MessageModel(
+      senderId: userModel!.uId,
+      dateTime: dateTime,
+      text: message,
+      receiverId: receiverId,
+    );
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel!.uId)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      emit(SendMessageSuccessState());
+    }).catchError((error) {
+      emit(SendMessageErrorState());
+    });
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .collection('chats')
+        .doc(userModel!.uId)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      emit(SendMessageSuccessState());
+    }).catchError((error) {
+      emit(SendMessageErrorState());
+    });
+  }
 }
